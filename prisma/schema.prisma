@@ -12,5 +12,6 @@ model usuario {
   nome      String
   email     String @unique
   senha     String
-  usarname  String
+  username  String
+  avatar    String
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Tic Tac Toe</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
@@ -33,36 +34,41 @@
   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      $("#cadastroForm").on("submit", function(e) {
-        e.preventDefault();
-  
-        const nome = $("#nome").val();
-        const email = $("#email").val();
-        const senha = $("#senha").val();
-        const username = $("#email").val();
-        const avatar = "";
-  
-        // Validação mínima
-        if (!nome || !email) {
-          alert("Preencha todos os campos obrigatórios.");
-          return;
-        }
-  
-        $.ajax({
-          url: "/api/v1/usuarios",
-          method: "POST",
-          contentType: "application/json",
-          data: JSON.stringify({ nome, email, senha, username, avatar }),
-          success: function(response) {
-            alert("Usuário cadastrado com sucesso!");
-            $("#cadastroForm")[0].reset();
-          },
-          error: function(xhr) {
-            const msg = xhr.responseJSON?.erro || "Erro ao cadastrar.";
-            alert(msg);
-          }
+        $("#cadastroForm").on("submit", function (e) {
+            e.preventDefault();
+
+            const email = $("#email").val();
+            const senha = $("#senha").val();
+
+            $.ajax({
+                url: "/api/v1/login",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ email, senha }),
+                success: function (response) {
+                    Swal.fire({
+                        title: "Login efetuado!",
+                        icon: "success"
+                    });
+                    // $("#cadastroForm")[0].reset();
+                },
+                error: function (xhr) {
+                    if (xhr.status == 401) {
+                        Swal.fire({
+                            title: "Usuário não encontrado!",
+                            icon: "error"
+                        });
+                    }
+                    else {
+                        const msg = xhr.responseJSON?.erro || "Erro ao cadastrar.";
+                        alert(msg);
+                    }
+
+                }
+            });
         });
-      });
+
+
     </script>
   </body>
 </html>
